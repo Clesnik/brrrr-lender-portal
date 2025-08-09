@@ -3,7 +3,6 @@ import {
   IconBarrierBlock,
   IconBug,
   IconChecklist,
-  IconCode,
   IconCoin,
   IconError404,
   IconLayoutDashboard,
@@ -158,28 +157,6 @@ export const sidebarData: SidebarData = {
               title: "Notifications",
               icon: IconNotification,
               url: "/settings/notifications",
-            },
-          ],
-        },
-        {
-          title: "Developers",
-          icon: IconCode,
-          items: [
-            {
-              title: "Overview",
-              url: "/developers/overview",
-            },
-            {
-              title: "API Keys",
-              url: "/developers/api-keys",
-            },
-            {
-              title: "Webhooks",
-              url: "/developers/webhooks",
-            },
-            {
-              title: "Events/Logs",
-              url: "/developers/events-&-logs",
             },
           ],
         },
