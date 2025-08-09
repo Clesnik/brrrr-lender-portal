@@ -12,8 +12,9 @@ import BridgeTypeSelection from "./components/bridge-type-selection"
 import SquareFootageSelection from "./components/square-footage-selection"
 import TransactionTypeSelection from "./components/transaction-type-selection"
 import WholesalerFeeSelection from "./components/wholesaler-fee-selection"
+import OccupancySelection from "./components/occupancy-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "wholesaler-fee"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -25,6 +26,13 @@ type BridgeType = "bridge" | "bridge_rehab" | "ground_up"
 type SquareFootageAnswer = "yes" | "no"
 type TransactionType = "purchase" | "delayed_purchase" | "refinance_cash_out" | "refinance_rate_term"
 type WholesalerFeeAnswer = "yes" | "no"
+
+interface OccupancyData {
+  numberOfUnits: string
+  numberOfVacantUnits: string
+  isShortTermRental: string
+  isSection8: string
+}
 
 interface PropertyAddress {
   streetAddress: string
@@ -47,6 +55,7 @@ export default function PricingEnginePage() {
   const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageAnswer | null>(null)
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
   const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeAnswer | null>(null)
+  const [selectedOccupancyData, setSelectedOccupancyData] = useState<OccupancyData | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -110,8 +119,30 @@ export default function PricingEnginePage() {
 
   const handleTransactionTypeNext = (transactionType: TransactionType) => {
     setSelectedTransactionType(transactionType)
-    // If Purchase is selected, go to Wholesaler Fee step
-    if (transactionType === "purchase") {
+    // If DSCR loan, go to Occupancy step
+    if (selectedLoanType === "dscr") {
+      setCurrentStep("occupancy")
+    } else {
+      // For Bridge loans, navigate to next step
+      console.log("Selected:", {
+        loanType: selectedLoanType,
+        borrowerType: selectedBorrowerType,
+        citizenshipType: selectedCitizenshipType,
+        ficoScore: selectedFicoScore,
+        propertyAddress: selectedPropertyAddress,
+        propertyType: selectedPropertyType,
+        warrantability: selectedWarrantability,
+        bridgeType: selectedBridgeType,
+        squareFootage: selectedSquareFootage,
+        transactionType
+      })
+    }
+  }
+
+  const handleOccupancyNext = (occupancyData: OccupancyData) => {
+    setSelectedOccupancyData(occupancyData)
+    // If Purchase transaction type, go to Wholesaler Fee step
+    if (selectedTransactionType === "purchase") {
       setCurrentStep("wholesaler-fee")
     } else {
       // For other transaction types, navigate to next step
@@ -125,7 +156,8 @@ export default function PricingEnginePage() {
         warrantability: selectedWarrantability,
         bridgeType: selectedBridgeType,
         squareFootage: selectedSquareFootage,
-        transactionType
+        transactionType: selectedTransactionType,
+        occupancyData
       })
     }
   }
@@ -150,6 +182,8 @@ export default function PricingEnginePage() {
 
   const handleBack = () => {
     if (currentStep === "wholesaler-fee") {
+      setCurrentStep("occupancy")
+    } else if (currentStep === "occupancy") {
       setCurrentStep("transaction-type")
     } else if (currentStep === "transaction-type") {
       // Go back based on loan type
@@ -225,6 +259,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "transaction-type") {
     return <TransactionTypeSelection onBack={handleBack} onNext={handleTransactionTypeNext} />
+  }
+
+  if (currentStep === "occupancy") {
+    return <OccupancySelection onBack={handleBack} onNext={handleOccupancyNext} />
   }
 
   if (currentStep === "wholesaler-fee") {
