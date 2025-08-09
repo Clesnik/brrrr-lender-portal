@@ -11,6 +11,7 @@ import CondoWarrantabilitySelection from "./components/condo-warrantability-sele
 import BridgeTypeSelection from "./components/bridge-type-selection"
 import SquareFootageSelection from "./components/square-footage-selection"
 import TransactionTypeSelection from "./components/transaction-type-selection"
+import WholesalerFeeSelection from "./components/wholesaler-fee-selection"
 
 type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "wholesaler-fee"
 type LoanType = "dscr" | "bridge"
