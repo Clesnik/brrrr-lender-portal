@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { IconCalculator, IconPipeline } from "@tabler/icons-react"
+import { IconCalculator, IconFlow } from "@tabler/icons-react"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,7 +46,7 @@ export default async function PipelinePage() {
       <Tabs defaultValue="pipeline" className="flex-1 flex flex-col">
         <TabsList className="w-fit">
           <TabsTrigger value="pipeline" className="flex items-center gap-2">
-            <IconPipeline size={16} />
+            <IconFlow size={16} />
             Pipeline
           </TabsTrigger>
           <TabsTrigger value="pricing-engine" className="flex items-center gap-2">
