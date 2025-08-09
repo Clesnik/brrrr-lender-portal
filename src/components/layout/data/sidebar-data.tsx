@@ -2,6 +2,7 @@ import {
   IconApps,
   IconBarrierBlock,
   IconBug,
+  IconCalculator,
   IconChecklist,
   IconCoin,
   IconError404,
