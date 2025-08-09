@@ -17,6 +17,7 @@ type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
 type FicoScoreRange = "350-659" | "660-679" | "680-699" | "700-719" | "720-739" | "740-759" | "760-779" | "780-850"
 type PropertyType = "single_family" | "townhome_pud" | "condominium" | "multifamily_2_4" | "multifamily_5_8"
+type PropertyType = "single_family" | "townhome_pud" | "condominium" | "multifamily_2_4" | "multifamily_5_8"
 type WarrantabilityType = "warrantable" | "non_warrantable"
 type BridgeType = "bridge" | "bridge_rehab" | "ground_up"
 type SquareFootageAnswer = "yes" | "no"
@@ -184,7 +185,7 @@ export default function PricingEnginePage() {
   }
 
   if (currentStep === "square-footage") {
-    return <SquareFootageSelection onBack={handleBack} onNext={handleSquareFootageNext} />
+    return <SquareFootageSelection onBack={handleBack} onNext={handleSquareFootageNext} propertyType={selectedPropertyType!} />
   }
 
   return null

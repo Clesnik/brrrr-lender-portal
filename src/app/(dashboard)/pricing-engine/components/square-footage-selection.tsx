@@ -12,15 +12,27 @@ type SquareFootageAnswer = "yes" | "no"
 interface Props {
   onBack: () => void
   onNext: (answer: SquareFootageAnswer) => void
+  propertyType: PropertyType
 }
 
-export default function SquareFootageSelection({ onBack, onNext }: Props) {
+export default function SquareFootageSelection({ onBack, onNext, propertyType }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<SquareFootageAnswer | null>(null)
 
   const handleContinue = () => {
     if (selectedAnswer) {
       onNext(selectedAnswer)
     }
+  }
+
+  const getSubheading = () => {
+    if (propertyType === "single_family" || propertyType === "townhome_pud") {
+      return "Is the unit below 700 sq ft?"
+    } else if (propertyType === "condominium") {
+      return "Is the unit below 500 sq ft?"
+    } else if (propertyType === "multifamily_2_4" || propertyType === "multifamily_5_8") {
+      return "Are any unit(s) below 500 sq ft?"
+    }
+    return "Is the unit below 700 sq ft?" // fallback
   }
 
   const answers = [
@@ -80,7 +92,7 @@ export default function SquareFootageSelection({ onBack, onNext }: Props) {
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight">Square Footage</h1>
           <p className="text-muted-foreground text-lg">
-            Is the unit below 700 sq ft?
+            {getSubheading()}
           </p>
         </div>
 
