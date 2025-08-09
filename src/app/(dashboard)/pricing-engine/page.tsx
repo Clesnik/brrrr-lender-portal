@@ -219,6 +219,7 @@ export default function PricingEnginePage() {
         }
       }
     } else if (currentStep === "income-expenses") {
+    }
     if (currentStep === "income-expenses") {
       // Go back based on whether we came from wholesaler fee or occupancy
       if (selectedTransactionType === "purchase") {
