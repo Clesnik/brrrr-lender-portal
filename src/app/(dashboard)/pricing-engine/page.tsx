@@ -13,8 +13,9 @@ import SquareFootageSelection from "./components/square-footage-selection"
 import TransactionTypeSelection from "./components/transaction-type-selection"
 import WholesalerFeeSelection from "./components/wholesaler-fee-selection"
 import OccupancySelection from "./components/occupancy-selection"
+import IncomeExpensesSelection from "./components/income-expenses-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -32,6 +33,16 @@ interface OccupancyData {
   numberOfVacantUnits: string
   isShortTermRental: string
   isSection8: string
+}
+
+interface IncomeExpensesData {
+  grossRent: string
+  marketRent: string
+  propertyTaxes: string
+  homeownersInsurance: string
+  floodInsurance: string
+  hoa: string
+  managementFee: string
 }
 
 interface PropertyAddress {
@@ -56,6 +67,7 @@ export default function PricingEnginePage() {
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
   const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeAnswer | null>(null)
   const [selectedOccupancyData, setSelectedOccupancyData] = useState<OccupancyData | null>(null)
+  const [selectedIncomeExpensesData, setSelectedIncomeExpensesData] = useState<IncomeExpensesData | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -145,26 +157,20 @@ export default function PricingEnginePage() {
     if (selectedTransactionType === "purchase") {
       setCurrentStep("wholesaler-fee")
     } else {
-      // For other transaction types, navigate to next step
-      console.log("Selected:", {
-        loanType: selectedLoanType,
-        borrowerType: selectedBorrowerType,
-        citizenshipType: selectedCitizenshipType,
-        ficoScore: selectedFicoScore,
-        propertyAddress: selectedPropertyAddress,
-        propertyType: selectedPropertyType,
-        warrantability: selectedWarrantability,
-        bridgeType: selectedBridgeType,
-        squareFootage: selectedSquareFootage,
-        transactionType: selectedTransactionType,
-        occupancyData
-      })
+      // For other transaction types, go to Income & Expenses
+      setCurrentStep("income-expenses")
     }
   }
 
   const handleWholesalerFeeNext = (wholesalerFee: WholesalerFeeAnswer) => {
     setSelectedWholesalerFee(wholesalerFee)
-    // Navigate to next step after wholesaler fee
+    // After wholesaler fee, go to Income & Expenses
+    setCurrentStep("income-expenses")
+  }
+
+  const handleIncomeExpensesNext = (incomeExpensesData: IncomeExpensesData) => {
+    setSelectedIncomeExpensesData(incomeExpensesData)
+    // Navigate to next step after income & expenses
     console.log("Selected:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
@@ -176,12 +182,21 @@ export default function PricingEnginePage() {
       bridgeType: selectedBridgeType,
       squareFootage: selectedSquareFootage,
       transactionType: selectedTransactionType,
-      wholesalerFee
+      wholesalerFee: selectedWholesalerFee,
+      occupancyData: selectedOccupancyData,
+      incomeExpensesData
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "wholesaler-fee") {
+    if (currentStep === "income-expenses") {
+      // Go back based on whether we came from wholesaler fee or occupancy
+      if (selectedTransactionType === "purchase") {
+        setCurrentStep("wholesaler-fee")
+      } else {
+        setCurrentStep("occupancy")
+      }
+    } else if (currentStep === "wholesaler-fee") {
       setCurrentStep("occupancy")
     } else if (currentStep === "occupancy") {
       setCurrentStep("transaction-type")
@@ -267,6 +282,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "wholesaler-fee") {
     return <WholesalerFeeSelection onBack={handleBack} onNext={handleWholesalerFeeNext} />
+  }
+
+  if (currentStep === "income-expenses") {
+    return <IncomeExpensesSelection onBack={handleBack} onNext={handleIncomeExpensesNext} />
   }
 
   return null
