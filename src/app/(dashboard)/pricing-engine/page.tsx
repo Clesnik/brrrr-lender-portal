@@ -15,8 +15,10 @@ import WholesalerFeeSelection from "./components/wholesaler-fee-selection"
 import OccupancySelection from "./components/occupancy-selection"
 import IncomeExpensesSelection from "./components/income-expenses-selection"
 import TransactionDetailsSelection from "./components/transaction-details-selection"
+import LoanStructureSelection from "./components/loan-structure-selection"
+import ExperienceSelection from "./components/experience-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses" | "transaction-details"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses" | "transaction-details" | "loan-structure" | "experience"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -52,6 +54,18 @@ interface TransactionDetailsData {
   payoffAmount: string
 }
 
+interface LoanStructureData {
+  loanStructure: string
+  prepaymentPenalty: string
+  maxLeverage: string
+}
+
+interface ExperienceData {
+  numberOfFlips: string
+  numberOfGroundUps: string
+  numberOfRentalsOwned: string
+}
+
 interface PropertyAddress {
   streetAddress: string
   aptUnit: string
@@ -76,6 +90,8 @@ export default function PricingEnginePage() {
   const [selectedOccupancyData, setSelectedOccupancyData] = useState<OccupancyData | null>(null)
   const [selectedIncomeExpensesData, setSelectedIncomeExpensesData] = useState<IncomeExpensesData | null>(null)
   const [selectedTransactionDetailsData, setSelectedTransactionDetailsData] = useState<TransactionDetailsData | null>(null)
+  const [selectedLoanStructureData, setSelectedLoanStructureData] = useState<LoanStructureData | null>(null)
+  const [selectedExperienceData, setSelectedExperienceData] = useState<ExperienceData | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -184,8 +200,39 @@ export default function PricingEnginePage() {
 
   const handleTransactionDetailsNext = (transactionDetailsData: TransactionDetailsData) => {
     setSelectedTransactionDetailsData(transactionDetailsData)
-    // Navigate to next step after transaction details
-    console.log("Selected:", {
+    // Navigate based on loan type
+    if (selectedLoanType === "dscr") {
+      setCurrentStep("loan-structure")
+    } else if (selectedLoanType === "bridge") {
+      setCurrentStep("experience")
+    }
+  }
+
+  const handleLoanStructureNext = (loanStructureData: LoanStructureData) => {
+    setSelectedLoanStructureData(loanStructureData)
+    // Navigate to next step after loan structure
+    console.log("DSCR Loan Complete:", {
+      loanType: selectedLoanType,
+      borrowerType: selectedBorrowerType,
+      citizenshipType: selectedCitizenshipType,
+      ficoScore: selectedFicoScore,
+      propertyAddress: selectedPropertyAddress,
+      propertyType: selectedPropertyType,
+      warrantability: selectedWarrantability,
+      squareFootage: selectedSquareFootage,
+      transactionType: selectedTransactionType,
+      occupancyData: selectedOccupancyData,
+      wholesalerFee: selectedWholesalerFee,
+      incomeExpensesData: selectedIncomeExpensesData,
+      transactionDetailsData,
+      loanStructureData
+    })
+  }
+
+  const handleExperienceNext = (experienceData: ExperienceData) => {
+    setSelectedExperienceData(experienceData)
+    // Navigate to next step after experience
+    console.log("Bridge Loan Complete:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
       citizenshipType: selectedCitizenshipType,
@@ -197,14 +244,17 @@ export default function PricingEnginePage() {
       squareFootage: selectedSquareFootage,
       transactionType: selectedTransactionType,
       wholesalerFee: selectedWholesalerFee,
-      occupancyData: selectedOccupancyData,
-      incomeExpensesData,
-      transactionDetailsData
+      transactionDetailsData,
+      experienceData
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "transaction-details") {
+    if (currentStep === "loan-structure") {
+      setCurrentStep("transaction-details")
+    } else if (currentStep === "experience") {
+      setCurrentStep("transaction-details")
+    } else if (currentStep === "transaction-details") {
       // Go back based on loan type and transaction type
       if (selectedLoanType === "dscr") {
         setCurrentStep("income-expenses")
@@ -324,6 +374,14 @@ export default function PricingEnginePage() {
 
   if (currentStep === "transaction-details") {
     return <TransactionDetailsSelection onBack={handleBack} onNext={handleTransactionDetailsNext} />
+  }
+
+  if (currentStep === "loan-structure") {
+    return <LoanStructureSelection onBack={handleBack} onNext={handleLoanStructureNext} />
+  }
+
+  if (currentStep === "experience") {
+    return <ExperienceSelection onBack={handleBack} onNext={handleExperienceNext} />
   }
 
   return null
