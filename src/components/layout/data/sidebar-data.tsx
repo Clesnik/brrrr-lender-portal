@@ -65,6 +65,11 @@ export const sidebarData: SidebarData = {
           url: "/pipeline",
           icon: IconUsers,
         },
+        {
+          title: "Pricing Engine",
+          url: "/pricing-engine",
+          icon: IconCalculator,
+        },
       ],
     },
     {
