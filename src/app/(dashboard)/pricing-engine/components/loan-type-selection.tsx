@@ -8,13 +8,16 @@ import { Label } from "@/components/ui/label"
 
 type LoanType = "dscr" | "bridge"
 
-export default function LoanTypeSelection() {
+interface Props {
+  onNext: (loanType: LoanType) => void
+}
+
+export default function LoanTypeSelection({ onNext }: Props) {
   const [selectedType, setSelectedType] = useState<LoanType | null>(null)
 
   const handleContinue = () => {
     if (selectedType) {
-      // Handle navigation to next step
-      console.log("Selected loan type:", selectedType)
+      onNext(selectedType)
     }
   }
 
