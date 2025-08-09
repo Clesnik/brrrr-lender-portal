@@ -12,7 +12,7 @@ import BridgeTypeSelection from "./components/bridge-type-selection"
 import SquareFootageSelection from "./components/square-footage-selection"
 import TransactionTypeSelection from "./components/transaction-type-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "wholesaler-fee"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -23,6 +23,7 @@ type WarrantabilityType = "warrantable" | "non_warrantable"
 type BridgeType = "bridge" | "bridge_rehab" | "ground_up"
 type SquareFootageAnswer = "yes" | "no"
 type TransactionType = "purchase" | "delayed_purchase" | "refinance_cash_out" | "refinance_rate_term"
+type WholesalerFeeAnswer = "yes" | "no"
 
 interface PropertyAddress {
   streetAddress: string
@@ -44,6 +45,7 @@ export default function PricingEnginePage() {
   const [selectedBridgeType, setSelectedBridgeType] = useState<BridgeType | null>(null)
   const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageAnswer | null>(null)
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
+  const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeAnswer | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -107,7 +109,29 @@ export default function PricingEnginePage() {
 
   const handleTransactionTypeNext = (transactionType: TransactionType) => {
     setSelectedTransactionType(transactionType)
-    // Navigate to next step after transaction type
+    // If Purchase is selected, go to Wholesaler Fee step
+    if (transactionType === "purchase") {
+      setCurrentStep("wholesaler-fee")
+    } else {
+      // For other transaction types, navigate to next step
+      console.log("Selected:", {
+        loanType: selectedLoanType,
+        borrowerType: selectedBorrowerType,
+        citizenshipType: selectedCitizenshipType,
+        ficoScore: selectedFicoScore,
+        propertyAddress: selectedPropertyAddress,
+        propertyType: selectedPropertyType,
+        warrantability: selectedWarrantability,
+        bridgeType: selectedBridgeType,
+        squareFootage: selectedSquareFootage,
+        transactionType
+      })
+    }
+  }
+
+  const handleWholesalerFeeNext = (wholesalerFee: WholesalerFeeAnswer) => {
+    setSelectedWholesalerFee(wholesalerFee)
+    // Navigate to next step after wholesaler fee
     console.log("Selected:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
@@ -118,12 +142,15 @@ export default function PricingEnginePage() {
       warrantability: selectedWarrantability,
       bridgeType: selectedBridgeType,
       squareFootage: selectedSquareFootage,
-      transactionType
+      transactionType: selectedTransactionType,
+      wholesalerFee
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "transaction-type") {
+    if (currentStep === "wholesaler-fee") {
+      setCurrentStep("transaction-type")
+    } else if (currentStep === "transaction-type") {
       // Go back based on loan type
       if (selectedLoanType === "bridge") {
         setCurrentStep("bridge-type")
@@ -197,6 +224,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "transaction-type") {
     return <TransactionTypeSelection onBack={handleBack} onNext={handleTransactionTypeNext} />
+  }
+
+  if (currentStep === "wholesaler-fee") {
+    return <WholesalerFeeSelection onBack={handleBack} onNext={handleWholesalerFeeNext} />
   }
 
   return null
