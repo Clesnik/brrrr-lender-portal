@@ -6,12 +6,14 @@ import BorrowerTypeSelection from "./components/borrower-type-selection"
 import CitizenshipSelection from "./components/citizenship-selection"
 import FicoScoreSelection from "./components/fico-score-selection"
 import PropertyAddressSelection from "./components/property-address-selection"
+import PropertyTypeSelection from "./components/property-type-selection"
 
 type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
 type FicoScoreRange = "350-659" | "660-679" | "680-699" | "700-719" | "720-739" | "740-759" | "760-779" | "780-850"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type"
 
 interface PropertyAddress {
   streetAddress: string
@@ -28,6 +30,7 @@ export default function PricingEnginePage() {
   const [selectedCitizenshipType, setSelectedCitizenshipType] = useState<CitizenshipType | null>(null)
   const [selectedFicoScore, setSelectedFicoScore] = useState<FicoScoreRange | null>(null)
   const [selectedPropertyAddress, setSelectedPropertyAddress] = useState<PropertyAddress | null>(null)
+  const [selectedPropertyType, setSelectedPropertyType] = useState<PropertyType | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -51,18 +54,26 @@ export default function PricingEnginePage() {
 
   const handlePropertyAddressNext = (propertyAddress: PropertyAddress) => {
     setSelectedPropertyAddress(propertyAddress)
-    // Navigate to next step (Property Type)
-    console.log("Selected:", { 
-      loanType: selectedLoanType, 
-      borrowerType: selectedBorrowerType, 
-      citizenshipType: selectedCitizenshipType, 
+    setCurrentStep("property-type")
+  }
+
+  const handlePropertyTypeNext = (propertyType: PropertyType) => {
+    setSelectedPropertyType(propertyType)
+    // Navigate to next step (Square Footage)
+    console.log("Selected:", {
+      loanType: selectedLoanType,
+      borrowerType: selectedBorrowerType,
+      citizenshipType: selectedCitizenshipType,
       ficoScore: selectedFicoScore,
-      propertyAddress
+      propertyAddress: selectedPropertyAddress,
+      propertyType
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "property-address") {
+    if (currentStep === "property-type") {
+      setCurrentStep("property-address")
+    } else if (currentStep === "property-address") {
       setCurrentStep("fico-score")
     } else if (currentStep === "fico-score") {
       setCurrentStep("citizenship")
@@ -91,6 +102,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "property-address") {
     return <PropertyAddressSelection onBack={handleBack} onNext={handlePropertyAddressNext} />
+  }
+
+  if (currentStep === "property-type") {
+    return <PropertyTypeSelection onBack={handleBack} onNext={handlePropertyTypeNext} />
   }
 
   return null
