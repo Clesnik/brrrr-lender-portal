@@ -10,8 +10,9 @@ import PropertyTypeSelection from "./components/property-type-selection"
 import CondoWarrantabilitySelection from "./components/condo-warrantability-selection"
 import BridgeTypeSelection from "./components/bridge-type-selection"
 import SquareFootageSelection from "./components/square-footage-selection"
+import TransactionTypeSelection from "./components/transaction-type-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -21,6 +22,7 @@ type PropertyType = "single_family" | "townhome_pud" | "condominium" | "multifam
 type WarrantabilityType = "warrantable" | "non_warrantable"
 type BridgeType = "bridge" | "bridge_rehab" | "ground_up"
 type SquareFootageAnswer = "yes" | "no"
+type TransactionType = "purchase" | "delayed_purchase" | "refinance_cash_out" | "refinance_rate_term"
 
 interface PropertyAddress {
   streetAddress: string
@@ -41,6 +43,7 @@ export default function PricingEnginePage() {
   const [selectedWarrantability, setSelectedWarrantability] = useState<WarrantabilityType | null>(null)
   const [selectedBridgeType, setSelectedBridgeType] = useState<BridgeType | null>(null)
   const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageAnswer | null>(null)
+  const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -94,22 +97,17 @@ export default function PricingEnginePage() {
 
   const handleBridgeTypeNext = (bridgeType: BridgeType) => {
     setSelectedBridgeType(bridgeType)
-    // Navigate to next step after bridge type
-    console.log("Selected:", {
-      loanType: selectedLoanType,
-      borrowerType: selectedBorrowerType,
-      citizenshipType: selectedCitizenshipType,
-      ficoScore: selectedFicoScore,
-      propertyAddress: selectedPropertyAddress,
-      propertyType: selectedPropertyType,
-      warrantability: selectedWarrantability,
-      bridgeType
-    })
+    setCurrentStep("transaction-type")
   }
 
   const handleSquareFootageNext = (squareFootage: SquareFootageAnswer) => {
     setSelectedSquareFootage(squareFootage)
-    // Navigate to next step after square footage
+    setCurrentStep("transaction-type")
+  }
+
+  const handleTransactionTypeNext = (transactionType: TransactionType) => {
+    setSelectedTransactionType(transactionType)
+    // Navigate to next step after transaction type
     console.log("Selected:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
@@ -118,12 +116,21 @@ export default function PricingEnginePage() {
       propertyAddress: selectedPropertyAddress,
       propertyType: selectedPropertyType,
       warrantability: selectedWarrantability,
-      squareFootage
+      bridgeType: selectedBridgeType,
+      squareFootage: selectedSquareFootage,
+      transactionType
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "square-footage") {
+    if (currentStep === "transaction-type") {
+      // Go back based on loan type
+      if (selectedLoanType === "bridge") {
+        setCurrentStep("bridge-type")
+      } else {
+        setCurrentStep("square-footage")
+      }
+    } else if (currentStep === "square-footage") {
       // Go back based on whether we came from condo warrantability or property type
       if (selectedPropertyType === "condominium") {
         setCurrentStep("condo-warrantability")
@@ -186,6 +193,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "square-footage") {
     return <SquareFootageSelection onBack={handleBack} onNext={handleSquareFootageNext} propertyType={selectedPropertyType!} />
+  }
+
+  if (currentStep === "transaction-type") {
+    return <TransactionTypeSelection onBack={handleBack} onNext={handleTransactionTypeNext} />
   }
 
   return null
