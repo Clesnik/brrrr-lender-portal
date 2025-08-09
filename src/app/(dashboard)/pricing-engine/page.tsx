@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import LoanTypeSelection from "./components/loan-type-selection"
 import BorrowerTypeSelection from "./components/borrower-type-selection"
