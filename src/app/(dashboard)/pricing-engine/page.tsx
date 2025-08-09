@@ -15,7 +15,10 @@ type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
 type FicoScoreRange = "350-659" | "660-679" | "680-699" | "700-719" | "720-739" | "740-759" | "760-779" | "780-850"
 type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage"
 type WarrantabilityType = "warrantable" | "non_warrantable"
+type BridgeType = "bridge" | "bridge_rehab" | "ground_up"
+type SquareFootageAnswer = "yes" | "no"
 
 interface PropertyAddress {
   streetAddress: string
@@ -34,6 +37,8 @@ export default function PricingEnginePage() {
   const [selectedPropertyAddress, setSelectedPropertyAddress] = useState<PropertyAddress | null>(null)
   const [selectedPropertyType, setSelectedPropertyType] = useState<PropertyType | null>(null)
   const [selectedWarrantability, setSelectedWarrantability] = useState<WarrantabilityType | null>(null)
+  const [selectedBridgeType, setSelectedBridgeType] = useState<BridgeType | null>(null)
+  const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageAnswer | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -66,21 +71,28 @@ export default function PricingEnginePage() {
     if (propertyType === "condominium") {
       setCurrentStep("condo-warrantability")
     } else {
-      // For other property types, skip to next step (Square Footage)
-      console.log("Selected:", {
-        loanType: selectedLoanType,
-        borrowerType: selectedBorrowerType,
-        citizenshipType: selectedCitizenshipType,
-        ficoScore: selectedFicoScore,
-        propertyAddress: selectedPropertyAddress,
-        propertyType
-      })
+      // For other property types, check loan type to determine next step
+      if (selectedLoanType === "dscr") {
+        setCurrentStep("square-footage")
+      } else if (selectedLoanType === "bridge") {
+        setCurrentStep("bridge-type")
+      }
     }
   }
 
   const handleWarrantabilityNext = (warrantabilityType: WarrantabilityType) => {
     setSelectedWarrantability(warrantabilityType)
-    // Navigate to next step (Square Footage)
+    // After condo warrantability, check loan type to determine next step
+    if (selectedLoanType === "dscr") {
+      setCurrentStep("square-footage")
+    } else if (selectedLoanType === "bridge") {
+      setCurrentStep("bridge-type")
+    }
+  }
+
+  const handleBridgeTypeNext = (bridgeType: BridgeType) => {
+    setSelectedBridgeType(bridgeType)
+    // Navigate to next step after bridge type
     console.log("Selected:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
@@ -88,12 +100,42 @@ export default function PricingEnginePage() {
       ficoScore: selectedFicoScore,
       propertyAddress: selectedPropertyAddress,
       propertyType: selectedPropertyType,
-      warrantability: warrantabilityType
+      warrantability: selectedWarrantability,
+      bridgeType
+    })
+  }
+
+  const handleSquareFootageNext = (squareFootage: SquareFootageAnswer) => {
+    setSelectedSquareFootage(squareFootage)
+    // Navigate to next step after square footage
+    console.log("Selected:", {
+      loanType: selectedLoanType,
+      borrowerType: selectedBorrowerType,
+      citizenshipType: selectedCitizenshipType,
+      ficoScore: selectedFicoScore,
+      propertyAddress: selectedPropertyAddress,
+      propertyType: selectedPropertyType,
+      warrantability: selectedWarrantability,
+      squareFootage
     })
   }
 
   const handleBack = () => {
-    if (currentStep === "condo-warrantability") {
+    if (currentStep === "square-footage") {
+      // Go back based on whether we came from condo warrantability or property type
+      if (selectedPropertyType === "condominium") {
+        setCurrentStep("condo-warrantability")
+      } else {
+        setCurrentStep("property-type")
+      }
+    } else if (currentStep === "bridge-type") {
+      // Go back based on whether we came from condo warrantability or property type
+      if (selectedPropertyType === "condominium") {
+        setCurrentStep("condo-warrantability")
+      } else {
+        setCurrentStep("property-type")
+      }
+    } else if (currentStep === "condo-warrantability") {
       setCurrentStep("property-type")
     } else if (currentStep === "property-type") {
       setCurrentStep("property-address")
@@ -134,6 +176,14 @@ export default function PricingEnginePage() {
 
   if (currentStep === "condo-warrantability") {
     return <CondoWarrantabilitySelection onBack={handleBack} onNext={handleWarrantabilityNext} />
+  }
+
+  if (currentStep === "bridge-type") {
+    return <BridgeTypeSelection onBack={handleBack} onNext={handleBridgeTypeNext} />
+  }
+
+  if (currentStep === "square-footage") {
+    return <SquareFootageSelection onBack={handleBack} onNext={handleSquareFootageNext} />
   }
 
   return null
