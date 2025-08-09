@@ -7,16 +7,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { UserPrimaryActions } from "./components/user-primary-actions"
-import { columns } from "./components/users-columns"
-import { UsersStats } from "./components/users-stats"
-import { UsersTable } from "./components/users-table"
-import { userListSchema } from "./data/schema"
-import { getUsers } from "./data/users"
+import { PipelinePrimaryActions } from "./components/pipeline-primary-actions"
+import { columns } from "./components/pipeline-columns"
+import { PipelineStats } from "./components/pipeline-stats"
+import { PipelineTable } from "./components/pipeline-table"
+import { loanListSchema } from "./data/schema"
+import { getLoans } from "./data/loans"
 
-export default async function UsersPage() {
-  const users = getUsers()
-  const userList = userListSchema.parse(users)
+export default async function PipelinePage() {
+  const loans = getLoans()
+  const loanList = loanListSchema.parse(loans)
   return (
     <>
       <div className="mb-4 flex flex-col gap-2">
@@ -29,20 +29,20 @@ export default async function UsersPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Users</BreadcrumbPage>
+              <BreadcrumbPage>Pipeline</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="flex-none text-xl font-bold tracking-tight">
-            User List
+            Loan Pipeline
           </h2>
-          <UserPrimaryActions />
+          <PipelinePrimaryActions />
         </div>
-        <UsersStats />
+        <PipelineStats />
       </div>
       <div className="flex-1">
-        <UsersTable data={userList} columns={columns} />
+        <PipelineTable data={loanList} columns={columns} />
       </div>
     </>
   )

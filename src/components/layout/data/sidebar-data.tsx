@@ -61,8 +61,8 @@ export const sidebarData: SidebarData = {
           icon: IconChecklist,
         },
         {
-          title: "Users",
-          url: "/users",
+          title: "Pipeline",
+          url: "/pipeline",
           icon: IconUsers,
         },
       ],
