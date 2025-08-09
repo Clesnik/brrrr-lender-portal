@@ -14,8 +14,10 @@ import TransactionTypeSelection from "./components/transaction-type-selection"
 import WholesalerFeeSelection from "./components/wholesaler-fee-selection"
 import OccupancySelection from "./components/occupancy-selection"
 import IncomeExpensesSelection from "./components/income-expenses-selection"
+import TransactionDetailsSelection from "./components/transaction-details-selection"
 
 type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses"
+type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses" | "transaction-details"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
 type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
@@ -45,6 +47,13 @@ interface IncomeExpensesData {
   managementFee: string
 }
 
+interface TransactionDetailsData {
+  purchasePrice: string
+  asIsValue: string
+  rehabCompleted: string
+  payoffAmount: string
+}
+
 interface PropertyAddress {
   streetAddress: string
   aptUnit: string
@@ -68,6 +77,7 @@ export default function PricingEnginePage() {
   const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeAnswer | null>(null)
   const [selectedOccupancyData, setSelectedOccupancyData] = useState<OccupancyData | null>(null)
   const [selectedIncomeExpensesData, setSelectedIncomeExpensesData] = useState<IncomeExpensesData | null>(null)
+  const [selectedTransactionDetailsData, setSelectedTransactionDetailsData] = useState<TransactionDetailsData | null>(null)
 
   const handleLoanTypeNext = (loanType: LoanType) => {
     setSelectedLoanType(loanType)
@@ -131,23 +141,17 @@ export default function PricingEnginePage() {
 
   const handleTransactionTypeNext = (transactionType: TransactionType) => {
     setSelectedTransactionType(transactionType)
-    // If DSCR loan, go to Occupancy step
-    if (selectedLoanType === "dscr") {
-      setCurrentStep("occupancy")
+    // If Bridge loan, go to Transaction Details
+    if (selectedLoanType === "bridge") {
+      // For Bridge loans with Purchase, go to Wholesaler Fee first
+      if (transactionType === "purchase") {
+        setCurrentStep("wholesaler-fee")
+      } else {
+        setCurrentStep("transaction-details")
+      }
     } else {
-      // For Bridge loans, navigate to next step
-      console.log("Selected:", {
-        loanType: selectedLoanType,
-        borrowerType: selectedBorrowerType,
-        citizenshipType: selectedCitizenshipType,
-        ficoScore: selectedFicoScore,
-        propertyAddress: selectedPropertyAddress,
-        propertyType: selectedPropertyType,
-        warrantability: selectedWarrantability,
-        bridgeType: selectedBridgeType,
-        squareFootage: selectedSquareFootage,
-        transactionType
-      })
+      // For DSCR loans, go to Occupancy step
+      setCurrentStep("occupancy")
     }
   }
 
@@ -164,13 +168,25 @@ export default function PricingEnginePage() {
 
   const handleWholesalerFeeNext = (wholesalerFee: WholesalerFeeAnswer) => {
     setSelectedWholesalerFee(wholesalerFee)
-    // After wholesaler fee, go to Income & Expenses
-    setCurrentStep("income-expenses")
+    // After wholesaler fee, check loan type
+    if (selectedLoanType === "dscr") {
+      // For DSCR loans, go to Income & Expenses
+      setCurrentStep("income-expenses")
+    } else {
+      // For Bridge loans, go to Transaction Details
+      setCurrentStep("transaction-details")
+    }
   }
 
   const handleIncomeExpensesNext = (incomeExpensesData: IncomeExpensesData) => {
     setSelectedIncomeExpensesData(incomeExpensesData)
-    // Navigate to next step after income & expenses
+    // For DSCR loans, go to Transaction Details after Income & Expenses
+    setCurrentStep("transaction-details")
+  }
+
+  const handleTransactionDetailsNext = (transactionDetailsData: TransactionDetailsData) => {
+    setSelectedTransactionDetailsData(transactionDetailsData)
+    // Navigate to next step after transaction details
     console.log("Selected:", {
       loanType: selectedLoanType,
       borrowerType: selectedBorrowerType,
@@ -184,11 +200,25 @@ export default function PricingEnginePage() {
       transactionType: selectedTransactionType,
       wholesalerFee: selectedWholesalerFee,
       occupancyData: selectedOccupancyData,
-      incomeExpensesData
+      incomeExpensesData,
+      transactionDetailsData
     })
   }
 
   const handleBack = () => {
+    if (currentStep === "transaction-details") {
+      // Go back based on loan type and transaction type
+      if (selectedLoanType === "dscr") {
+        setCurrentStep("income-expenses")
+      } else if (selectedLoanType === "bridge") {
+        // For Bridge loans, check if we came from wholesaler fee or transaction type
+        if (selectedTransactionType === "purchase") {
+          setCurrentStep("wholesaler-fee")
+        } else {
+          setCurrentStep("transaction-type")
+        }
+      }
+    } else if (currentStep === "income-expenses") {
     if (currentStep === "income-expenses") {
       // Go back based on whether we came from wholesaler fee or occupancy
       if (selectedTransactionType === "purchase") {
@@ -197,7 +227,12 @@ export default function PricingEnginePage() {
         setCurrentStep("occupancy")
       }
     } else if (currentStep === "wholesaler-fee") {
-      setCurrentStep("occupancy")
+      // Go back based on loan type
+      if (selectedLoanType === "dscr") {
+        setCurrentStep("occupancy")
+      } else if (selectedLoanType === "bridge") {
+        setCurrentStep("transaction-type")
+      }
     } else if (currentStep === "occupancy") {
       setCurrentStep("transaction-type")
     } else if (currentStep === "transaction-type") {
@@ -286,6 +321,10 @@ export default function PricingEnginePage() {
 
   if (currentStep === "income-expenses") {
     return <IncomeExpensesSelection onBack={handleBack} onNext={handleIncomeExpensesNext} />
+  }
+
+  if (currentStep === "transaction-details") {
+    return <TransactionDetailsSelection onBack={handleBack} onNext={handleTransactionDetailsNext} />
   }
 
   return null
