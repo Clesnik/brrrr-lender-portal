@@ -18,7 +18,7 @@ interface Props<TData> {
 
 export function DataTableViewOptions<TData>({ table }: Props<TData>) {
   return (
-    <DropdownMenu modal={false}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
