@@ -190,4 +190,5 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
       </div>
     </div>
   )
+  )
 }
