@@ -42,9 +42,9 @@ export default function LoanTypeSelection({ onNext }: Props) {
             <RadioGroupItem value="dscr" id="dscr" className="peer sr-only" />
             <Label
               htmlFor="dscr"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+              className="cursor-pointer block"
             >
-              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-primary">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-2xl">DSCR</CardTitle>
                   <CardDescription className="text-base">
@@ -79,9 +79,9 @@ export default function LoanTypeSelection({ onNext }: Props) {
             <RadioGroupItem value="bridge" id="bridge" className="peer sr-only" />
             <Label
               htmlFor="bridge"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+              className="cursor-pointer block"
             >
-              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-primary">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-2xl">Bridge</CardTitle>
                   <CardDescription className="text-base">
