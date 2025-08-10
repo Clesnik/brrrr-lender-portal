@@ -82,8 +82,8 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
-            className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+          >
             Next
             <ArrowRight className="w-4 h-4" />
           </Button>
