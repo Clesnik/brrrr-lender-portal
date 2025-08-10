@@ -40,10 +40,6 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
     }
   }
 
-  const updateField = <K extends keyof RehabDetailsData>(field: K, value: RehabDetailsData[K]) => {
-    setRehabDetailsData(prev => ({ ...prev, [field]: value }))
-  }
-
   const updateStringField = (field: "constructionBudget" | "afterRepairValue", value: string) => {
     setRehabDetailsData(prev => ({ ...prev, [field]: value }))
   }
