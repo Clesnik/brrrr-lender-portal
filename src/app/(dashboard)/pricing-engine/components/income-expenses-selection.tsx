@@ -109,7 +109,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -240,7 +240,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
               size="lg" 
               disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Next
             </Button>
