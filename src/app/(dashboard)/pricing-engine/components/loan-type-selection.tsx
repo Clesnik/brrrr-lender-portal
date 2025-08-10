@@ -48,8 +48,14 @@ export default function LoanTypeSelection({ onNext }: Props) {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">DSCR</CardTitle>
-                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-[#24356C] peer-data-[state=checked]:bg-[#24356C] flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedType === "dscr" 
+                        ? "border-[#24356C] bg-[#24356C]" 
+                        : "border-gray-300"
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full bg-white ${
+                        selectedType === "dscr" ? "opacity-100" : "opacity-0"
+                      }`}></div>
                     </div>
                   </div>
                   <CardDescription className="text-base">
@@ -90,8 +96,14 @@ export default function LoanTypeSelection({ onNext }: Props) {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">Bridge</CardTitle>
-                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-[#24356C] peer-data-[state=checked]:bg-[#24356C] flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedType === "bridge" 
+                        ? "border-[#24356C] bg-[#24356C]" 
+                        : "border-gray-300"
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full bg-white ${
+                        selectedType === "bridge" ? "opacity-100" : "opacity-0"
+                      }`}></div>
                     </div>
                   </div>
                   <CardDescription className="text-base">
