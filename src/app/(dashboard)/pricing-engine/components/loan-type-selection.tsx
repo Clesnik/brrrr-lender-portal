@@ -44,7 +44,11 @@ export default function LoanTypeSelection({ onNext }: Props) {
               htmlFor="dscr"
               className="cursor-pointer block"
             >
-              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-[#24356C]">
+              <Card className={`h-full transition-all hover:shadow-md ${
+                selectedType === "dscr" 
+                  ? "border-2 border-[#24356C]" 
+                  : "border"
+              }`}>
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">DSCR</CardTitle>
@@ -92,7 +96,11 @@ export default function LoanTypeSelection({ onNext }: Props) {
               htmlFor="bridge"
               className="cursor-pointer block"
             >
-              <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-[#24356C]">
+              <Card className={`h-full transition-all hover:shadow-md ${
+                selectedType === "bridge" 
+                  ? "border-2 border-[#24356C]" 
+                  : "border"
+              }`}>
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">Bridge</CardTitle>
