@@ -93,28 +93,25 @@ export default function BorrowerTypeSelection({ onBack, onNext }: Props) {
               className="cursor-pointer block"
             >
               <Card className={`transition-all hover:shadow-md ${
-                selectedType === type.value 
+                selectedType === "entity" 
                   ? "border-2 border-[#24356C]" 
                   : "border"
               }`}>
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl">{type.label}</CardTitle>
+                    <CardTitle className="text-2xl">Entity</CardTitle>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedType === type.value 
+                      selectedType === "entity" 
                         ? "border-[#24356C] bg-[#24356C]" 
                         : "border-gray-300"
                     }`}>
                       <div className={`w-2 h-2 rounded-full bg-white ${
-                        selectedType === type.value ? "opacity-100" : "opacity-0"
+                        selectedType === "entity" ? "opacity-100" : "opacity-0"
                       }`}></div>
                     </div>
                   </div>
                   <CardDescription className="text-base">
-                    {type.value === "entity" 
-                      ? "Closing in an LLC, Corporation, or other business entity"
-                      : "Closing in personal name or as an individual"
-                    }
+                    Closing in an LLC, Corporation, or other business entity
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -125,11 +122,26 @@ export default function BorrowerTypeSelection({ onBack, onNext }: Props) {
             <RadioGroupItem value="individual" id="individual" className="peer sr-only" />
             <Label
               htmlFor="individual"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+              className="cursor-pointer block"
             >
-              <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+              <Card className={`transition-all hover:shadow-md ${
+                selectedType === "individual" 
+                  ? "border-2 border-[#24356C]" 
+                  : "border"
+              }`}>
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl">Individual</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-2xl">Individual</CardTitle>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedType === "individual" 
+                        ? "border-[#24356C] bg-[#24356C]" 
+                        : "border-gray-300"
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full bg-white ${
+                        selectedType === "individual" ? "opacity-100" : "opacity-0"
+                      }`}></div>
+                    </div>
+                  </div>
                   <CardDescription className="text-base">
                     Closing in personal name or as an individual
                   </CardDescription>

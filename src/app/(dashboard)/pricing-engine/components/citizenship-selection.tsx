@@ -23,6 +23,13 @@ export default function CitizenshipSelection({ onBack, onNext }: Props) {
     }
   }
 
+  const citizenshipTypes = [
+    { value: "us_citizen" as const, label: "U.S. Citizen", description: "Born in the United States or naturalized citizen" },
+    { value: "permanent_resident" as const, label: "Permanent Resident", description: "Green card holder with permanent residency status" },
+    { value: "non_permanent_resident" as const, label: "Non-Permanent Resident", description: "Temporary visa holder or work authorization" },
+    { value: "foreign_national" as const, label: "Foreign National", description: "Non-U.S. citizen residing outside the United States" },
+  ]
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[600px] p-8">
       <div className="w-full max-w-4xl space-y-8">
@@ -91,96 +98,39 @@ export default function CitizenshipSelection({ onBack, onNext }: Props) {
           onValueChange={(value) => setSelectedType(value as CitizenshipType)}
           className="grid grid-cols-1 gap-4 mt-12 max-w-2xl mx-auto"
         >
-          <div className="space-y-2">
-            <RadioGroupItem value="us_citizen" id="us_citizen" className="peer sr-only" />
-            <Label
-              htmlFor="us_citizen"
-              className="cursor-pointer block"
-            >
-              <Card className={`transition-all hover:shadow-md ${
-                selectedType === type.value 
-                  ? "border-2 border-[#24356C]" 
-                  : "border"
-              }`}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">
-                      {type.value === "us_citizen" ? "U.S. Citizen" :
-                       type.value === "permanent_resident" ? "Permanent Resident" :
-                       type.value === "non_permanent_resident" ? "Non-Permanent Resident" :
-                       "Foreign National"}
-                    </CardTitle>
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedType === type.value 
-                        ? "border-[#24356C] bg-[#24356C]" 
-                        : "border-gray-300"
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full bg-white ${
-                        selectedType === type.value ? "opacity-100" : "opacity-0"
-                      }`}></div>
+          {citizenshipTypes.map((option) => (
+            <div key={option.value} className="space-y-2">
+              <RadioGroupItem value={option.value} id={option.value} className="peer sr-only" />
+              <Label
+                htmlFor={option.value}
+                className="cursor-pointer block"
+              >
+                <Card className={`transition-all hover:shadow-md ${
+                  selectedType === option.value 
+                    ? "border-2 border-[#24356C]" 
+                    : "border"
+                }`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl">{option.label}</CardTitle>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedType === option.value 
+                          ? "border-[#24356C] bg-[#24356C]" 
+                          : "border-gray-300"
+                      }`}>
+                        <div className={`w-2 h-2 rounded-full bg-white ${
+                          selectedType === option.value ? "opacity-100" : "opacity-0"
+                        }`}></div>
+                      </div>
                     </div>
-                  </div>
-                  <CardDescription className="text-base text-muted-foreground">
-                    {type.value === "us_citizen" ? "Born in the United States or naturalized citizen" :
-                     type.value === "permanent_resident" ? "Green card holder with permanent residency status" :
-                     type.value === "non_permanent_resident" ? "Temporary visa holder or work authorization" :
-                     "Non-U.S. citizen residing outside the United States"}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Label>
-          </div>
-
-          <div className="space-y-2">
-            <RadioGroupItem value="permanent_resident" id="permanent_resident" className="peer sr-only" />
-            <Label
-              htmlFor="permanent_resident"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
-            >
-              <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-xl">Permanent Resident</CardTitle>
-                  <CardDescription className="text-base text-muted-foreground">
-                    Green card holder with permanent residency status
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Label>
-          </div>
-
-          <div className="space-y-2">
-            <RadioGroupItem value="non_permanent_resident" id="non_permanent_resident" className="peer sr-only" />
-            <Label
-              htmlFor="non_permanent_resident"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
-            >
-              <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-xl">Non-Permanent Resident</CardTitle>
-                  <CardDescription className="text-base text-muted-foreground">
-                    Temporary visa holder or work authorization
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Label>
-          </div>
-
-          <div className="space-y-2">
-            <RadioGroupItem value="foreign_national" id="foreign_national" className="peer sr-only" />
-            <Label
-              htmlFor="foreign_national"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
-            >
-              <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-xl">Foreign National</CardTitle>
-                  <CardDescription className="text-base text-muted-foreground">
-                    Non-U.S. citizen residing outside the United States
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Label>
-          </div>
+                    <CardDescription className="text-base text-muted-foreground">
+                      {option.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Label>
+            </div>
+          ))}
         </RadioGroup>
       </div>
     </div>

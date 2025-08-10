@@ -107,7 +107,7 @@ export default function FicoScoreSelection({ onBack, onNext }: Props) {
               <RadioGroupItem value={range.value} id={range.value} className="peer sr-only" />
               <Label
                 htmlFor={range.value}
-                className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                className="cursor-pointer block"
               >
                 <Card className={`transition-all hover:shadow-md ${
                   selectedScore === range.value 
