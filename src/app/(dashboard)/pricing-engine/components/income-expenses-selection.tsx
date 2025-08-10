@@ -249,5 +249,4 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
       </div>
     </div>
   )
-  )
 }
