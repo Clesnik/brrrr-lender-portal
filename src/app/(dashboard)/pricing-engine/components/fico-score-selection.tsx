@@ -108,24 +108,24 @@ export default function FicoScoreSelection({ onBack, onNext }: Props) {
               <Label
                 htmlFor={range.value}
                 className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
-              className="cursor-pointer block"
-                <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
-              <Card className={`transition-all hover:shadow-md ${
-                selectedScore === range.value 
-                  ? "border-2 border-[#24356C]" 
-                  : "border"
-              }`}>
+              >
+                <Card className={`transition-all hover:shadow-md ${
+                  selectedScore === range.value 
+                    ? "border-2 border-[#24356C]" 
+                    : "border"
+                }`}>
+                  <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-xl font-semibold">{range.label}</CardTitle>
-                      <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedScore === range.value 
-                        ? "border-[#24356C] bg-[#24356C]" 
-                        : "border-gray-300"
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full bg-white ${
-                        selectedScore === range.value ? "opacity-100" : "opacity-0"
-                      }`}></div>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedScore === range.value 
+                          ? "border-[#24356C] bg-[#24356C]" 
+                          : "border-gray-300"
+                      }`}>
+                        <div className={`w-2 h-2 rounded-full bg-white ${
+                          selectedScore === range.value ? "opacity-100" : "opacity-0"
+                        }`}></div>
+                      </div>
                     </div>
                   </CardHeader>
                 </Card>
