@@ -6,15 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 type LoanStructureType = "30_year_fixed" | "10_1_arm_io"
 type PrepaymentPenaltyType = "5_year_step_down" | "4_year_step_down" | "3_year_step_down" | "2_year_step_down" | "1_year" | "none"
 type MaxLeverageType = "yes" | "no"
 
 interface LoanStructureData {
-  loanStructure: LoanStructureType
-  prepaymentPenalty: PrepaymentPenaltyType
-  maxLeverage: MaxLeverageType
+  loanStructure: LoanStructureType | null
+  prepaymentPenalty: PrepaymentPenaltyType | null
+  maxLeverage: MaxLeverageType | null
 }
 
 interface Props {
@@ -24,17 +25,81 @@ interface Props {
 
 export default function LoanStructureSelection({ onBack, onNext }: Props) {
   const [loanStructureData, setLoanStructureData] = useState<LoanStructureData>({
-    loanStructure: "30_year_fixed",
-    prepaymentPenalty: "none",
-    maxLeverage: "no",
+    loanStructure: null,
+    prepaymentPenalty: null,
+    maxLeverage: null,
   })
+  const [loanAmount, setLoanAmount] = useState<string>("")
+  const [ltv, setLtv] = useState<string>("")
+
+  const isFormValid = 
+    loanStructureData.loanStructure && 
+    loanStructureData.prepaymentPenalty && 
+    loanStructureData.maxLeverage &&
+    (loanStructureData.maxLeverage === "yes" || (loanAmount && ltv))
 
   const handleContinue = () => {
-    onNext(loanStructureData)
+    if (isFormValid) {
+      onNext(loanStructureData as Required<LoanStructureData>)
+    }
   }
 
   const updateField = <K extends keyof LoanStructureData>(field: K, value: LoanStructureData[K]) => {
     setLoanStructureData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const formatDisplayValue = (value: string) => {
+    if (!value) return ''
+    
+    // If it ends with a decimal point, format the number part and keep the decimal
+    if (value.endsWith('.')) {
+      const numberPart = value.slice(0, -1)
+      if (numberPart === '') return '.'
+      const number = parseFloat(numberPart)
+      if (isNaN(number)) return '.'
+      return number.toLocaleString('en-US') + '.'
+    }
+    
+    // Handle decimal numbers
+    const parts = value.split('.')
+    if (parts.length === 2) {
+      const beforeDecimal = parts[0] || '0'
+      const afterDecimal = parts[1].substring(0, 2) // Limit to 2 decimal places
+      
+      const number = parseFloat(beforeDecimal)
+      if (isNaN(number)) return ''
+      
+      const formatted = number.toLocaleString('en-US')
+      return formatted + '.' + afterDecimal
+    }
+    
+    // Handle whole numbers
+    const number = parseFloat(value)
+    if (isNaN(number)) return ''
+    
+    return number.toLocaleString('en-US')
+  }
+
+  const handleCurrencyInput = (value: string) => {
+    // Remove commas and allow only numbers and decimal points
+    const cleanValue = value.replace(/,/g, '').replace(/[^0-9.]/g, '')
+    
+    // Handle decimal input with 2 decimal place limit
+    const parts = cleanValue.split('.')
+    if (parts.length > 2) {
+      // Multiple decimal points - keep only the first one
+      const beforeDecimal = parts[0]
+      const afterDecimal = parts.slice(1).join('').substring(0, 2)
+      setLoanAmount(beforeDecimal + '.' + afterDecimal)
+    } else if (parts.length === 2) {
+      // Single decimal point - limit to 2 decimal places
+      const beforeDecimal = parts[0] || ''
+      const afterDecimal = parts[1].substring(0, 2)
+      setLoanAmount(beforeDecimal + '.' + afterDecimal)
+    } else {
+      // No decimal point
+      setLoanAmount(cleanValue)
+    }
   }
 
   const loanStructureOptions = [
@@ -95,8 +160,9 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
             Back
           </Button>
           <Button 
+            disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -117,7 +183,7 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Loan Structure</h2>
             <RadioGroup
-              value={loanStructureData.loanStructure}
+              value={loanStructureData.loanStructure || ""}
               onValueChange={(value) => updateField("loanStructure", value as LoanStructureType)}
               className="space-y-3"
             >
@@ -158,7 +224,7 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Prepayment Penalty</h2>
             <RadioGroup
-              value={loanStructureData.prepaymentPenalty}
+              value={loanStructureData.prepaymentPenalty || ""}
               onValueChange={(value) => updateField("prepaymentPenalty", value as PrepaymentPenaltyType)}
               className="space-y-3"
             >
@@ -199,7 +265,7 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Are you looking for max leverage?</h2>
             <RadioGroup
-              value={loanStructureData.maxLeverage}
+              value={loanStructureData.maxLeverage || ""}
               onValueChange={(value) => updateField("maxLeverage", value as MaxLeverageType)}
               className="space-y-3"
             >
@@ -236,11 +302,45 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
             </RadioGroup>
           </div>
 
+          {/* Conditional Input Fields - Only show when "No - Custom pricing" is selected */}
+          {loanStructureData.maxLeverage === "no" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="loanAmount">Loan Amount</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input
+                      id="loanAmount"
+                      placeholder="0.00"
+                      value={formatDisplayValue(loanAmount)}
+                      onChange={(e) => handleCurrencyInput(e.target.value)}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="ltv">LTV</Label>
+                  <Input
+                    id="ltv"
+                    type="number"
+                    placeholder="0"
+                    value={ltv}
+                    onChange={(e) => setLtv(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-center pt-8">
             <Button 
               size="lg" 
+              disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Calculate
             </Button>

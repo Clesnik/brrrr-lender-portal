@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 type RehabDetailsData = {
-  expandingSquareFootage: "yes" | "no"
-  changingUse: "yes" | "no"
+  expandingSquareFootage: "yes" | "no" | null
+  changingUse: "yes" | "no" | null
   constructionBudget: string
   afterRepairValue: string
 }
@@ -22,8 +22,8 @@ interface Props {
 
 export default function RehabDetailsSelection({ onBack, onNext }: Props) {
   const [rehabDetailsData, setRehabDetailsData] = useState<RehabDetailsData>({
-    expandingSquareFootage: "no",
-    changingUse: "no",
+    expandingSquareFootage: null,
+    changingUse: null,
     constructionBudget: "",
     afterRepairValue: "",
   })
@@ -36,7 +36,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
 
   const handleContinue = () => {
     if (isFormValid) {
-      onNext(rehabDetailsData)
+      onNext(rehabDetailsData as Required<RehabDetailsData>)
     }
   }
 
@@ -48,22 +48,58 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
     setRehabDetailsData(prev => ({ ...prev, [field]: value }))
   }
 
-  const formatCurrency = (value: string) => {
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    if (numericValue === '') return ''
+  const formatDisplayValue = (value: string) => {
+    if (!value) return ''
     
-    const number = parseFloat(numericValue)
+    // If it ends with a decimal point, format the number part and keep the decimal
+    if (value.endsWith('.')) {
+      const numberPart = value.slice(0, -1)
+      if (numberPart === '') return '.'
+      const number = parseFloat(numberPart)
+      if (isNaN(number)) return '.'
+      return number.toLocaleString('en-US') + '.'
+    }
+    
+    // Handle decimal numbers
+    const parts = value.split('.')
+    if (parts.length === 2) {
+      const beforeDecimal = parts[0] || '0'
+      const afterDecimal = parts[1].substring(0, 2) // Limit to 2 decimal places
+      
+      const number = parseFloat(beforeDecimal)
+      if (isNaN(number)) return ''
+      
+      const formatted = number.toLocaleString('en-US')
+      return formatted + '.' + afterDecimal
+    }
+    
+    // Handle whole numbers
+    const number = parseFloat(value)
     if (isNaN(number)) return ''
     
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
+    return number.toLocaleString('en-US')
   }
 
   const handleCurrencyInput = (field: "constructionBudget" | "afterRepairValue", value: string) => {
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    updateStringField(field, numericValue)
+    // Remove commas and allow only numbers and decimal points
+    const cleanValue = value.replace(/,/g, '').replace(/[^0-9.]/g, '')
+    
+    // Handle decimal input with 2 decimal place limit
+    const parts = cleanValue.split('.')
+    if (parts.length > 2) {
+      // Multiple decimal points - keep only the first one
+      const beforeDecimal = parts[0]
+      const afterDecimal = parts.slice(1).join('').substring(0, 2)
+      updateStringField(field, beforeDecimal + '.' + afterDecimal)
+    } else if (parts.length === 2) {
+      // Single decimal point - limit to 2 decimal places
+      const beforeDecimal = parts[0] || ''
+      const afterDecimal = parts[1].substring(0, 2)
+      updateStringField(field, beforeDecimal + '.' + afterDecimal)
+    } else {
+      // No decimal point
+      updateStringField(field, cleanValue)
+    }
   }
 
   return (
@@ -107,7 +143,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a] px-12"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -130,7 +166,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
               Does your project involve expanding the square footage by 20% or more?
             </p>
             <RadioGroup
-              value={rehabDetailsData.expandingSquareFootage}
+              value={rehabDetailsData.expandingSquareFootage || ""}
               onValueChange={(value) => updateBooleanLikeField("expandingSquareFootage", value as "yes" | "no")}
               className="space-y-3"
             >
@@ -200,7 +236,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
               Does your project involve changing the use of the property?
             </p>
             <RadioGroup
-              value={rehabDetailsData.changingUse}
+              value={rehabDetailsData.changingUse || ""}
               onValueChange={(value) => updateBooleanLikeField("changingUse", value as "yes" | "no")}
               className="space-y-3"
             >
@@ -273,7 +309,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <Input
                   id="constructionBudget"
                   placeholder="0.00"
-                  value={formatCurrency(rehabDetailsData.constructionBudget)}
+                  value={formatDisplayValue(rehabDetailsData.constructionBudget)}
                   onChange={(e) => handleCurrencyInput("constructionBudget", e.target.value)}
                   className="pl-8 text-lg h-12"
                 />
@@ -287,7 +323,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <Input
                   id="afterRepairValue"
                   placeholder="0.00"
-                  value={formatCurrency(rehabDetailsData.afterRepairValue)}
+                  value={formatDisplayValue(rehabDetailsData.afterRepairValue)}
                   onChange={(e) => handleCurrencyInput("afterRepairValue", e.target.value)}
                   className="pl-8 text-lg h-12"
                 />
@@ -300,7 +336,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
               size="lg" 
               disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Next
             </Button>

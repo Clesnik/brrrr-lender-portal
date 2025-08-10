@@ -48,24 +48,58 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
     setIncomeExpensesData(prev => ({ ...prev, [field]: value }))
   }
 
-  const formatCurrency = (value: string) => {
-    // Remove non-numeric characters except decimal point
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    if (numericValue === '') return ''
+  const formatDisplayValue = (value: string) => {
+    if (!value) return ''
     
-    const number = parseFloat(numericValue)
+    // If it ends with a decimal point, format the number part and keep the decimal
+    if (value.endsWith('.')) {
+      const numberPart = value.slice(0, -1)
+      if (numberPart === '') return '.'
+      const number = parseFloat(numberPart)
+      if (isNaN(number)) return '.'
+      return number.toLocaleString('en-US') + '.'
+    }
+    
+    // Handle decimal numbers
+    const parts = value.split('.')
+    if (parts.length === 2) {
+      const beforeDecimal = parts[0] || '0'
+      const afterDecimal = parts[1].substring(0, 2) // Limit to 2 decimal places
+      
+      const number = parseFloat(beforeDecimal)
+      if (isNaN(number)) return ''
+      
+      const formatted = number.toLocaleString('en-US')
+      return formatted + '.' + afterDecimal
+    }
+    
+    // Handle whole numbers
+    const number = parseFloat(value)
     if (isNaN(number)) return ''
     
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
+    return number.toLocaleString('en-US')
   }
 
   const handleCurrencyInput = (field: keyof IncomeExpensesData, value: string) => {
-    // Store the raw numeric value
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    updateField(field, numericValue)
+    // Remove commas and allow only numbers and decimal points
+    const cleanValue = value.replace(/,/g, '').replace(/[^0-9.]/g, '')
+    
+    // Handle decimal input with 2 decimal place limit
+    const parts = cleanValue.split('.')
+    if (parts.length > 2) {
+      // Multiple decimal points - keep only the first one
+      const beforeDecimal = parts[0]
+      const afterDecimal = parts.slice(1).join('').substring(0, 2)
+      updateField(field, beforeDecimal + '.' + afterDecimal)
+    } else if (parts.length === 2) {
+      // Single decimal point - limit to 2 decimal places
+      const beforeDecimal = parts[0] || ''
+      const afterDecimal = parts[1].substring(0, 2)
+      updateField(field, beforeDecimal + '.' + afterDecimal)
+    } else {
+      // No decimal point
+      updateField(field, cleanValue)
+    }
   }
 
   return (
@@ -134,7 +168,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="grossRent"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.grossRent)}
+                    value={formatDisplayValue(incomeExpensesData.grossRent)}
                     onChange={(e) => handleCurrencyInput("grossRent", e.target.value)}
                     className="pl-8"
                   />
@@ -148,7 +182,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="marketRent"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.marketRent)}
+                    value={formatDisplayValue(incomeExpensesData.marketRent)}
                     onChange={(e) => handleCurrencyInput("marketRent", e.target.value)}
                     className="pl-8"
                   />
@@ -168,7 +202,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="propertyTaxes"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.propertyTaxes)}
+                    value={formatDisplayValue(incomeExpensesData.propertyTaxes)}
                     onChange={(e) => handleCurrencyInput("propertyTaxes", e.target.value)}
                     className="pl-8"
                   />
@@ -182,7 +216,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="homeownersInsurance"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.homeownersInsurance)}
+                    value={formatDisplayValue(incomeExpensesData.homeownersInsurance)}
                     onChange={(e) => handleCurrencyInput("homeownersInsurance", e.target.value)}
                     className="pl-8"
                   />
@@ -196,7 +230,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="floodInsurance"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.floodInsurance)}
+                    value={formatDisplayValue(incomeExpensesData.floodInsurance)}
                     onChange={(e) => handleCurrencyInput("floodInsurance", e.target.value)}
                     className="pl-8"
                   />
@@ -210,7 +244,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="hoa"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.hoa)}
+                    value={formatDisplayValue(incomeExpensesData.hoa)}
                     onChange={(e) => handleCurrencyInput("hoa", e.target.value)}
                     className="pl-8"
                   />
@@ -226,7 +260,7 @@ export default function IncomeExpensesSelection({ onBack, onNext }: Props) {
                   <Input
                     id="managementFee"
                     placeholder="0.00"
-                    value={formatCurrency(incomeExpensesData.managementFee)}
+                    value={formatDisplayValue(incomeExpensesData.managementFee)}
                     onChange={(e) => handleCurrencyInput("managementFee", e.target.value)}
                     className="pl-8"
                   />

@@ -6,20 +6,31 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 type WholesalerFeeAnswer = "yes" | "no"
 
+interface WholesalerFeeData {
+  hasWholesalerFee: WholesalerFeeAnswer
+  assignmentFee?: string
+}
+
 interface Props {
   onBack: () => void
-  onNext: (wholesalerFee: WholesalerFeeAnswer) => void
+  onNext: (wholesalerFeeData: WholesalerFeeData) => void
 }
 
 export default function WholesalerFeeSelection({ onBack, onNext }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<WholesalerFeeAnswer | null>(null)
+  const [assignmentFee, setAssignmentFee] = useState<string>("")
 
   const handleContinue = () => {
     if (selectedAnswer) {
-      onNext(selectedAnswer)
+      const wholesalerFeeData: WholesalerFeeData = {
+        hasWholesalerFee: selectedAnswer,
+        ...(selectedAnswer === "yes" && { assignmentFee })
+      }
+      onNext(wholesalerFeeData)
     }
   }
 
@@ -120,6 +131,34 @@ export default function WholesalerFeeSelection({ onBack, onNext }: Props) {
             </div>
           ))}
         </RadioGroup>
+
+        {/* Assignment Fee Input - Only show when "Yes" is selected */}
+        {selectedAnswer === "yes" && (
+          <div className="max-w-2xl mx-auto mt-6">
+            <div className="space-y-2">
+              <Label htmlFor="assignmentFee">What is the Assignment Fee?</Label>
+              <Input
+                id="assignmentFee"
+                type="text"
+                placeholder="$0.00"
+                value={assignmentFee}
+                onChange={(e) => setAssignmentFee(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            
+            {/* Next button - Only show when "Yes" is selected */}
+            <div className="flex justify-center pt-8">
+              <Button 
+                size="lg" 
+                onClick={handleContinue}
+                className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

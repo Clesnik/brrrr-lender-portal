@@ -22,9 +22,10 @@ interface OccupancyData {
 interface Props {
   onBack: () => void
   onNext: (occupancyData: OccupancyData) => void
+  propertyType: "single_family" | "townhome_pud" | "condominium" | "multifamily_2_4" | "multifamily_5_8" | null
 }
 
-export default function OccupancySelection({ onBack, onNext }: Props) {
+export default function OccupancySelection({ onBack, onNext, propertyType }: Props) {
   const [occupancyData, setOccupancyData] = useState<OccupancyData>({
     numberOfUnits: "",
     numberOfVacantUnits: "",
@@ -48,15 +49,71 @@ export default function OccupancySelection({ onBack, onNext }: Props) {
     setOccupancyData(prev => ({ ...prev, [field]: value }))
   }
 
-  const unitOptions = Array.from({ length: 8 }, (_, i) => ({
-    value: (i + 1).toString(),
-    label: (i + 1).toString(),
-  }))
+  const getUnitOptions = () => {
+    if (!propertyType) return []
+    
+    switch (propertyType) {
+      case "single_family":
+      case "townhome_pud":
+      case "condominium":
+        return [{ value: "1", label: "1" }]
+      case "multifamily_2_4":
+        return [
+          { value: "2", label: "2" },
+          { value: "3", label: "3" },
+          { value: "4", label: "4" }
+        ]
+      case "multifamily_5_8":
+        return [
+          { value: "5", label: "5" },
+          { value: "6", label: "6" },
+          { value: "7", label: "7" },
+          { value: "8", label: "8" }
+        ]
+      default:
+        return []
+    }
+  }
 
-  const vacantUnitOptions = Array.from({ length: 9 }, (_, i) => ({
-    value: i.toString(),
-    label: i.toString(),
-  }))
+  const unitOptions = getUnitOptions()
+
+  const getVacantUnitOptions = () => {
+    if (!propertyType) return []
+    
+    switch (propertyType) {
+      case "single_family":
+      case "townhome_pud":
+      case "condominium":
+        return [
+          { value: "0", label: "0" },
+          { value: "1", label: "1" }
+        ]
+      case "multifamily_2_4":
+        return [
+          { value: "0", label: "0" },
+          { value: "1", label: "1" },
+          { value: "2", label: "2" },
+          { value: "3", label: "3" },
+          { value: "4", label: "4" }
+        ]
+      case "multifamily_5_8":
+        return [
+          { value: "0", label: "0" },
+          { value: "1", label: "1" },
+          { value: "2", label: "2" },
+          { value: "3", label: "3" },
+          { value: "4", label: "4" },
+          { value: "5", label: "5" },
+          { value: "6", label: "6" },
+          { value: "7", label: "7" },
+          { value: "8", label: "8" }
+        ]
+      default:
+        return []
+    }
+  }
+
+  const vacantUnitOptions = getVacantUnitOptions()
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[600px] p-8">
@@ -99,7 +156,7 @@ export default function OccupancySelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a] px-12"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -180,7 +237,7 @@ export default function OccupancySelection({ onBack, onNext }: Props) {
               size="lg" 
               disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Next
             </Button>

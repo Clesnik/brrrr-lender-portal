@@ -16,9 +16,10 @@ interface TransactionDetailsData {
 interface Props {
   onBack: () => void
   onNext: (transactionDetailsData: TransactionDetailsData) => void
+  transactionType: "purchase" | "delayed_purchase" | "refinance_cash_out" | "refinance_rate_term" | null
 }
 
-export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
+export default function TransactionDetailsSelection({ onBack, onNext, transactionType }: Props) {
   const [transactionDetailsData, setTransactionDetailsData] = useState<TransactionDetailsData>({
     purchasePrice: "",
     asIsValue: "",
@@ -28,7 +29,9 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
 
   const isFormValid = 
     transactionDetailsData.purchasePrice && 
-    transactionDetailsData.asIsValue
+    transactionDetailsData.asIsValue &&
+    (transactionType === "purchase" || 
+     (transactionDetailsData.rehabCompleted && transactionDetailsData.payoffAmount))
 
   const handleContinue = () => {
     if (isFormValid) {
@@ -40,24 +43,58 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
     setTransactionDetailsData(prev => ({ ...prev, [field]: value }))
   }
 
-  const formatCurrency = (value: string) => {
-    // Remove non-numeric characters except decimal point
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    if (numericValue === '') return ''
+  const formatDisplayValue = (value: string) => {
+    if (!value) return ''
     
-    const number = parseFloat(numericValue)
+    // If it ends with a decimal point, format the number part and keep the decimal
+    if (value.endsWith('.')) {
+      const numberPart = value.slice(0, -1)
+      if (numberPart === '') return '.'
+      const number = parseFloat(numberPart)
+      if (isNaN(number)) return '.'
+      return number.toLocaleString('en-US') + '.'
+    }
+    
+    // Handle decimal numbers
+    const parts = value.split('.')
+    if (parts.length === 2) {
+      const beforeDecimal = parts[0] || '0'
+      const afterDecimal = parts[1].substring(0, 2) // Limit to 2 decimal places
+      
+      const number = parseFloat(beforeDecimal)
+      if (isNaN(number)) return ''
+      
+      const formatted = number.toLocaleString('en-US')
+      return formatted + '.' + afterDecimal
+    }
+    
+    // Handle whole numbers
+    const number = parseFloat(value)
     if (isNaN(number)) return ''
     
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
+    return number.toLocaleString('en-US')
   }
 
   const handleCurrencyInput = (field: keyof TransactionDetailsData, value: string) => {
-    // Store the raw numeric value
-    const numericValue = value.replace(/[^0-9.]/g, '')
-    updateField(field, numericValue)
+    // Remove commas and allow only numbers and decimal points
+    const cleanValue = value.replace(/,/g, '').replace(/[^0-9.]/g, '')
+    
+    // Handle decimal input with 2 decimal place limit
+    const parts = cleanValue.split('.')
+    if (parts.length > 2) {
+      // Multiple decimal points - keep only the first one
+      const beforeDecimal = parts[0]
+      const afterDecimal = parts.slice(1).join('').substring(0, 2)
+      updateField(field, beforeDecimal + '.' + afterDecimal)
+    } else if (parts.length === 2) {
+      // Single decimal point - limit to 2 decimal places
+      const beforeDecimal = parts[0] || ''
+      const afterDecimal = parts[1].substring(0, 2)
+      updateField(field, beforeDecimal + '.' + afterDecimal)
+    } else {
+      // No decimal point
+      updateField(field, cleanValue)
+    }
   }
 
   return (
@@ -101,7 +138,7 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -126,7 +163,7 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
                 <Input
                   id="purchasePrice"
                   placeholder="0.00"
-                  value={formatCurrency(transactionDetailsData.purchasePrice)}
+                  value={formatDisplayValue(transactionDetailsData.purchasePrice)}
                   onChange={(e) => handleCurrencyInput("purchasePrice", e.target.value)}
                   className="pl-8 text-lg h-12"
                 />
@@ -140,40 +177,44 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
                 <Input
                   id="asIsValue"
                   placeholder="0.00"
-                  value={formatCurrency(transactionDetailsData.asIsValue)}
+                  value={formatDisplayValue(transactionDetailsData.asIsValue)}
                   onChange={(e) => handleCurrencyInput("asIsValue", e.target.value)}
                   className="pl-8 text-lg h-12"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="rehabCompleted">Rehab Completed</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
-                <Input
-                  id="rehabCompleted"
-                  placeholder="0.00"
-                  value={formatCurrency(transactionDetailsData.rehabCompleted)}
-                  onChange={(e) => handleCurrencyInput("rehabCompleted", e.target.value)}
-                  className="pl-8 text-lg h-12"
-                />
-              </div>
-            </div>
+            {transactionType !== "purchase" && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="rehabCompleted">Rehab Completed</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input
+                      id="rehabCompleted"
+                      placeholder="0.00"
+                      value={formatDisplayValue(transactionDetailsData.rehabCompleted)}
+                      onChange={(e) => handleCurrencyInput("rehabCompleted", e.target.value)}
+                      className="pl-8 text-lg h-12"
+                    />
+                  </div>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="payoffAmount">Payoff Amount</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
-                <Input
-                  id="payoffAmount"
-                  placeholder="0.00"
-                  value={formatCurrency(transactionDetailsData.payoffAmount)}
-                  onChange={(e) => handleCurrencyInput("payoffAmount", e.target.value)}
-                  className="pl-8 text-lg h-12"
-                />
-              </div>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="payoffAmount">Payoff Amount</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input
+                      id="payoffAmount"
+                      placeholder="0.00"
+                      value={formatDisplayValue(transactionDetailsData.payoffAmount)}
+                      onChange={(e) => handleCurrencyInput("payoffAmount", e.target.value)}
+                      className="pl-8 text-lg h-12"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="flex justify-center pt-8">
@@ -181,7 +222,7 @@ export default function TransactionDetailsSelection({ onBack, onNext }: Props) {
               size="lg" 
               disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Next
             </Button>

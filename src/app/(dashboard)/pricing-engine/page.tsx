@@ -32,6 +32,11 @@ type SquareFootageAnswer = "yes" | "no"
 type TransactionType = "purchase" | "delayed_purchase" | "refinance_cash_out" | "refinance_rate_term"
 type WholesalerFeeAnswer = "yes" | "no"
 
+interface WholesalerFeeData {
+  hasWholesalerFee: WholesalerFeeAnswer
+  assignmentFee?: string
+}
+
 interface OccupancyData {
   numberOfUnits: string
   numberOfVacantUnits: string
@@ -97,7 +102,7 @@ export default function PricingEnginePage() {
   const [selectedBridgeType, setSelectedBridgeType] = useState<BridgeType | null>(null)
   const [selectedSquareFootage, setSelectedSquareFootage] = useState<SquareFootageAnswer | null>(null)
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType | null>(null)
-  const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeAnswer | null>(null)
+  const [selectedWholesalerFee, setSelectedWholesalerFee] = useState<WholesalerFeeData | null>(null)
   const [selectedOccupancyData, setSelectedOccupancyData] = useState<OccupancyData | null>(null)
   const [selectedIncomeExpensesData, setSelectedIncomeExpensesData] = useState<IncomeExpensesData | null>(null)
   const [selectedTransactionDetailsData, setSelectedTransactionDetailsData] = useState<TransactionDetailsData | null>(null)
@@ -193,8 +198,8 @@ export default function PricingEnginePage() {
     }
   }
 
-  const handleWholesalerFeeNext = (wholesalerFee: WholesalerFeeAnswer) => {
-    setSelectedWholesalerFee(wholesalerFee)
+  const handleWholesalerFeeNext = (wholesalerFeeData: WholesalerFeeData) => {
+    setSelectedWholesalerFee(wholesalerFeeData)
     // After wholesaler fee, check loan type
     if (selectedLoanType === "dscr") {
       // For DSCR loans, go to Income & Expenses
@@ -402,7 +407,7 @@ export default function PricingEnginePage() {
   }
 
   if (currentStep === "occupancy") {
-    return <OccupancySelection onBack={handleBack} onNext={handleOccupancyNext} />
+    return <OccupancySelection onBack={handleBack} onNext={handleOccupancyNext} propertyType={selectedPropertyType} />
   }
 
   if (currentStep === "wholesaler-fee") {
@@ -414,7 +419,7 @@ export default function PricingEnginePage() {
   }
 
   if (currentStep === "transaction-details") {
-    return <TransactionDetailsSelection onBack={handleBack} onNext={handleTransactionDetailsNext} />
+    return <TransactionDetailsSelection onBack={handleBack} onNext={handleTransactionDetailsNext} transactionType={selectedTransactionType} />
   }
 
   if (currentStep === "loan-structure") {
@@ -430,7 +435,7 @@ export default function PricingEnginePage() {
   }
 
   if (currentStep === "loan-pricing") {
-    return <LoanPricingSelection onBack={handleBack} onNext={handleLoanPricingNext} />
+    return <LoanPricingSelection onBack={handleBack} onNext={handleLoanPricingNext} bridgeType={selectedBridgeType} />
   }
 
   return null

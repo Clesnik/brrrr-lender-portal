@@ -41,6 +41,19 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
     setExperienceData(prev => ({ ...prev, [field]: numericValue }))
   }
 
+  const handleKeyDown = (field: keyof ExperienceData, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      const currentValue = parseInt(experienceData[field]) || 0
+      updateField(field, (currentValue + 1).toString())
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      const currentValue = parseInt(experienceData[field]) || 0
+      const newValue = Math.max(0, currentValue - 1) // Prevent negative values
+      updateField(field, newValue.toString())
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[600px] p-8">
       <div className="w-full max-w-4xl space-y-8">
@@ -82,7 +95,7 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -104,10 +117,14 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
               <Label htmlFor="numberOfFlips"># of Flips</Label>
               <Input
                 id="numberOfFlips"
+                type="number"
                 placeholder="0"
                 value={experienceData.numberOfFlips}
                 onChange={(e) => updateField("numberOfFlips", e.target.value)}
-                className="text-center text-lg h-12"
+                onKeyDown={(e) => handleKeyDown("numberOfFlips", e)}
+                className="text-lg h-12"
+                min="0"
+                step="1"
               />
             </div>
 
@@ -115,10 +132,14 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
               <Label htmlFor="numberOfGroundUps"># of Ground Ups</Label>
               <Input
                 id="numberOfGroundUps"
+                type="number"
                 placeholder="0"
                 value={experienceData.numberOfGroundUps}
                 onChange={(e) => updateField("numberOfGroundUps", e.target.value)}
-                className="text-center text-lg h-12"
+                onKeyDown={(e) => handleKeyDown("numberOfGroundUps", e)}
+                className="text-lg h-12"
+                min="0"
+                step="1"
               />
             </div>
           </div>
@@ -128,10 +149,14 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
               <Label htmlFor="numberOfRentalsOwned"># of Rentals Owned</Label>
               <Input
                 id="numberOfRentalsOwned"
+                type="number"
                 placeholder="0"
                 value={experienceData.numberOfRentalsOwned}
                 onChange={(e) => updateField("numberOfRentalsOwned", e.target.value)}
-                className="text-center text-lg h-12"
+                onKeyDown={(e) => handleKeyDown("numberOfRentalsOwned", e)}
+                className="text-lg h-12"
+                min="0"
+                step="1"
               />
             </div>
           </div>
@@ -141,7 +166,7 @@ export default function ExperienceSelection({ onBack, onNext }: Props) {
               size="lg" 
               disabled={!isFormValid}
               onClick={handleContinue}
-              className="px-12 bg-blue-600 hover:bg-blue-700"
+              className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
             >
               Next
             </Button>
