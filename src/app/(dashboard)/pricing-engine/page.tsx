@@ -291,6 +291,7 @@ export default function PricingEnginePage() {
     } else if (currentStep === "rehab-details") {
       setCurrentStep("experience")
     } else if (currentStep === "loan-structure") {
+    }
     if (currentStep === "loan-structure") {
       setCurrentStep("transaction-details")
     } else if (currentStep === "experience") {
