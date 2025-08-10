@@ -20,7 +20,6 @@ import ExperienceSelection from "./components/experience-selection"
 import RehabDetailsSelection from "./components/rehab-details-selection"
 import LoanPricingSelection from "./components/loan-pricing-selection"
 
-type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses" | "transaction-details" | "loan-structure" | "experience"
 type Step = "loan-type" | "borrower-type" | "citizenship" | "fico-score" | "property-address" | "property-type" | "condo-warrantability" | "bridge-type" | "square-footage" | "transaction-type" | "occupancy" | "wholesaler-fee" | "income-expenses" | "transaction-details" | "loan-structure" | "experience" | "rehab-details" | "loan-pricing"
 type LoanType = "dscr" | "bridge"
 type BorrowerType = "entity" | "individual"
