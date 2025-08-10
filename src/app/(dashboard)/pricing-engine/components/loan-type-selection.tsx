@@ -106,6 +106,10 @@ export default function LoanTypeSelection({ onNext }: Props) {
                       <div className="w-1.5 h-1.5 bg-current rounded-full" />
                       Ground-up construction available
                     </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-current rounded-full" />
+                      Close in LLC or personal name
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
