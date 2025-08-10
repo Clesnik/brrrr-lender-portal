@@ -138,14 +138,24 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <RadioGroupItem value="yes" id="expanding-yes" className="peer sr-only" />
                 <Label
                   htmlFor="expanding-yes"
-                  className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                  className="cursor-pointer block"
                 >
-                  <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                  <Card className={`transition-all hover:shadow-md ${
+                    rehabDetailsData.expandingSquareFootage === "yes" 
+                      ? "border-2 border-[#24356C]" 
+                      : "border"
+                  }`}>
                     <CardHeader className="py-4">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-medium">Yes</CardTitle>
-                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          rehabDetailsData.expandingSquareFootage === "yes" 
+                            ? "border-[#24356C] bg-[#24356C]" 
+                            : "border-gray-300"
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full bg-white ${
+                            rehabDetailsData.expandingSquareFootage === "yes" ? "opacity-100" : "opacity-0"
+                          }`}></div>
                         </div>
                       </div>
                     </CardHeader>
@@ -157,14 +167,24 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <RadioGroupItem value="no" id="expanding-no" className="peer sr-only" />
                 <Label
                   htmlFor="expanding-no"
-                  className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                  className="cursor-pointer block"
                 >
-                  <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                  <Card className={`transition-all hover:shadow-md ${
+                    rehabDetailsData.expandingSquareFootage === "no" 
+                      ? "border-2 border-[#24356C]" 
+                      : "border"
+                  }`}>
                     <CardHeader className="py-4">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-medium">No</CardTitle>
-                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          rehabDetailsData.expandingSquareFootage === "no" 
+                            ? "border-[#24356C] bg-[#24356C]" 
+                            : "border-gray-300"
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full bg-white ${
+                            rehabDetailsData.expandingSquareFootage === "no" ? "opacity-100" : "opacity-0"
+                          }`}></div>
                         </div>
                       </div>
                     </CardHeader>
@@ -188,14 +208,24 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <RadioGroupItem value="yes" id="changing-yes" className="peer sr-only" />
                 <Label
                   htmlFor="changing-yes"
-                  className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                  className="cursor-pointer block"
                 >
-                  <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                  <Card className={`transition-all hover:shadow-md ${
+                    rehabDetailsData.changingUse === "yes" 
+                      ? "border-2 border-[#24356C]" 
+                      : "border"
+                  }`}>
                     <CardHeader className="py-4">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-medium">Yes</CardTitle>
-                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          rehabDetailsData.changingUse === "yes" 
+                            ? "border-[#24356C] bg-[#24356C]" 
+                            : "border-gray-300"
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full bg-white ${
+                            rehabDetailsData.changingUse === "yes" ? "opacity-100" : "opacity-0"
+                          }`}></div>
                         </div>
                       </div>
                     </CardHeader>
@@ -207,14 +237,24 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
                 <RadioGroupItem value="no" id="changing-no" className="peer sr-only" />
                 <Label
                   htmlFor="changing-no"
-                  className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                  className="cursor-pointer block"
                 >
-                  <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                  <Card className={`transition-all hover:shadow-md ${
+                    rehabDetailsData.changingUse === "no" 
+                      ? "border-2 border-[#24356C]" 
+                      : "border"
+                  }`}>
                     <CardHeader className="py-4">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-medium">No</CardTitle>
-                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          rehabDetailsData.changingUse === "no" 
+                            ? "border-[#24356C] bg-[#24356C]" 
+                            : "border-gray-300"
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full bg-white ${
+                            rehabDetailsData.changingUse === "no" ? "opacity-100" : "opacity-0"
+                          }`}></div>
                         </div>
                       </div>
                     </CardHeader>
