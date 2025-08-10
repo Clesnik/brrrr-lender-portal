@@ -7,14 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 
-type FicoScoreRange = "350-659" | "660-679" | "680-699" | "700-719" | "720-739" | "740-759" | "760-779" | "780-850"
+type FicoScoreRange = "no-fico" | "350-659" | "660-679" | "680-699" | "700-719" | "720-739" | "740-759" | "760-779" | "780-850"
+type CitizenshipType = "us_citizen" | "permanent_resident" | "non_permanent_resident" | "foreign_national"
 
 interface Props {
   onBack: () => void
   onNext: (ficoScore: FicoScoreRange) => void
+  citizenshipType: CitizenshipType | null
 }
 
-export default function FicoScoreSelection({ onBack, onNext }: Props) {
+export default function FicoScoreSelection({ onBack, onNext, citizenshipType }: Props) {
   const [selectedScore, setSelectedScore] = useState<FicoScoreRange | null>(null)
 
   const handleContinue = () => {
@@ -23,7 +25,7 @@ export default function FicoScoreSelection({ onBack, onNext }: Props) {
     }
   }
 
-  const ficoRanges = [
+  const baseFicoRanges = [
     { value: "350-659" as const, label: "350 - 659" },
     { value: "660-679" as const, label: "660 - 679" },
     { value: "680-699" as const, label: "680 - 699" },
@@ -33,6 +35,11 @@ export default function FicoScoreSelection({ onBack, onNext }: Props) {
     { value: "760-779" as const, label: "760 - 779" },
     { value: "780-850" as const, label: "780 - 850" },
   ]
+
+  // Add No-FICO option for non-permanent residents and foreign nationals
+  const ficoRanges = (citizenshipType === "non_permanent_resident" || citizenshipType === "foreign_national") 
+    ? [{ value: "no-fico" as const, label: "No-FICO" }, ...baseFicoRanges]
+    : baseFicoRanges
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[600px] p-8">

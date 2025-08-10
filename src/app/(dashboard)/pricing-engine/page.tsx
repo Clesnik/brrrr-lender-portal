@@ -374,7 +374,7 @@ export default function PricingEnginePage() {
   }
 
   if (currentStep === "fico-score") {
-    return <FicoScoreSelection onBack={handleBack} onNext={handleFicoScoreNext} />
+    return <FicoScoreSelection onBack={handleBack} onNext={handleFicoScoreNext} citizenshipType={selectedCitizenshipType} />
   }
 
   if (currentStep === "property-address") {
