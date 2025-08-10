@@ -64,8 +64,8 @@ export default function BorrowerTypeSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!selectedType}
             onClick={handleContinue}
-            className="flex items-center gap-2"
-            className="px-8 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 px-8 bg-[#24356C] hover:bg-[#1e2d5a]"
+          >
             Next
             <ArrowRight className="w-4 h-4" />
           </Button>
