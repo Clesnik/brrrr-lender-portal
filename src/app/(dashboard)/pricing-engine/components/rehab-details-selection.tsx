@@ -44,6 +44,14 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
     setRehabDetailsData(prev => ({ ...prev, [field]: value }))
   }
 
+  const updateStringField = (field: "constructionBudget" | "afterRepairValue", value: string) => {
+    setRehabDetailsData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const updateBooleanLikeField = (field: "expandingSquareFootage" | "changingUse", value: "yes" | "no") => {
+    setRehabDetailsData(prev => ({ ...prev, [field]: value }))
+  }
+
   const formatCurrency = (value: string) => {
     const numericValue = value.replace(/[^0-9.]/g, '')
     if (numericValue === '') return ''
@@ -59,7 +67,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
 
   const handleCurrencyInput = (field: "constructionBudget" | "afterRepairValue", value: string) => {
     const numericValue = value.replace(/[^0-9.]/g, '')
-    updateField(field, numericValue)
+    updateStringField(field, numericValue)
   }
 
   return (
@@ -127,7 +135,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
             </p>
             <RadioGroup
               value={rehabDetailsData.expandingSquareFootage}
-              onValueChange={(value) => updateField("expandingSquareFootage", value as "yes" | "no")}
+              onValueChange={(value) => updateBooleanLikeField("expandingSquareFootage", value as "yes" | "no")}
               className="space-y-3"
             >
               <div className="space-y-2">
@@ -177,7 +185,7 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
             </p>
             <RadioGroup
               value={rehabDetailsData.changingUse}
-              onValueChange={(value) => updateField("changingUse", value as "yes" | "no")}
+              onValueChange={(value) => updateBooleanLikeField("changingUse", value as "yes" | "no")}
               className="space-y-3"
             >
               <div className="space-y-2">
