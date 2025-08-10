@@ -95,13 +95,36 @@ export default function CitizenshipSelection({ onBack, onNext }: Props) {
             <RadioGroupItem value="us_citizen" id="us_citizen" className="peer sr-only" />
             <Label
               htmlFor="us_citizen"
-              className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+              className="cursor-pointer block"
             >
-              <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+              <Card className={`transition-all hover:shadow-md ${
+                selectedType === type.value 
+                  ? "border-2 border-[#24356C]" 
+                  : "border"
+              }`}>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-xl">U.S. Citizen</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xl">
+                      {type.value === "us_citizen" ? "U.S. Citizen" :
+                       type.value === "permanent_resident" ? "Permanent Resident" :
+                       type.value === "non_permanent_resident" ? "Non-Permanent Resident" :
+                       "Foreign National"}
+                    </CardTitle>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedType === type.value 
+                        ? "border-[#24356C] bg-[#24356C]" 
+                        : "border-gray-300"
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full bg-white ${
+                        selectedType === type.value ? "opacity-100" : "opacity-0"
+                      }`}></div>
+                    </div>
+                  </div>
                   <CardDescription className="text-base text-muted-foreground">
-                    Born in the United States or naturalized citizen
+                    {type.value === "us_citizen" ? "Born in the United States or naturalized citizen" :
+                     type.value === "permanent_resident" ? "Green card holder with permanent residency status" :
+                     type.value === "non_permanent_resident" ? "Temporary visa holder or work authorization" :
+                     "Non-U.S. citizen residing outside the United States"}
                   </CardDescription>
                 </CardHeader>
               </Card>

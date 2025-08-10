@@ -125,14 +125,24 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
                   <RadioGroupItem value={option.value} id={option.value} className="peer sr-only" />
                   <Label
                     htmlFor={option.value}
-                    className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                    className="cursor-pointer block"
                   >
-                    <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                    <Card className={`transition-all hover:shadow-md ${
+                      loanStructureData.loanStructure === option.value 
+                        ? "border-2 border-[#24356C]" 
+                        : "border"
+                    }`}>
                       <CardHeader className="py-4">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-lg font-medium">{option.label}</CardTitle>
-                          <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            loanStructureData.loanStructure === option.value 
+                              ? "border-[#24356C] bg-[#24356C]" 
+                              : "border-gray-300"
+                          }`}>
+                            <div className={`w-2 h-2 rounded-full bg-white ${
+                              loanStructureData.loanStructure === option.value ? "opacity-100" : "opacity-0"
+                            }`}></div>
                           </div>
                         </div>
                       </CardHeader>
@@ -156,14 +166,24 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
                   <RadioGroupItem value={option.value} id={option.value} className="peer sr-only" />
                   <Label
                     htmlFor={option.value}
-                    className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                    className="cursor-pointer block"
                   >
-                    <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                    <Card className={`transition-all hover:shadow-md ${
+                      loanStructureData.prepaymentPenalty === option.value 
+                        ? "border-2 border-[#24356C]" 
+                        : "border"
+                    }`}>
                       <CardHeader className="py-4">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-lg font-medium">{option.label}</CardTitle>
-                          <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            loanStructureData.prepaymentPenalty === option.value 
+                              ? "border-[#24356C] bg-[#24356C]" 
+                              : "border-gray-300"
+                          }`}>
+                            <div className={`w-2 h-2 rounded-full bg-white ${
+                              loanStructureData.prepaymentPenalty === option.value ? "opacity-100" : "opacity-0"
+                            }`}></div>
                           </div>
                         </div>
                       </CardHeader>
@@ -187,14 +207,24 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
                   <RadioGroupItem value={option.value} id={option.value} className="peer sr-only" />
                   <Label
                     htmlFor={option.value}
-                    className="cursor-pointer block peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary peer-data-[state=checked]:ring-offset-2"
+                    className="cursor-pointer block"
                   >
-                    <Card className="transition-all hover:shadow-md peer-data-[state=checked]:border-primary">
+                    <Card className={`transition-all hover:shadow-md ${
+                      loanStructureData.maxLeverage === option.value 
+                        ? "border-2 border-[#24356C]" 
+                        : "border"
+                    }`}>
                       <CardHeader className="py-4">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-lg font-medium">{option.label}</CardTitle>
-                          <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            loanStructureData.maxLeverage === option.value 
+                              ? "border-[#24356C] bg-[#24356C]" 
+                              : "border-gray-300"
+                          }`}>
+                            <div className={`w-2 h-2 rounded-full bg-white ${
+                              loanStructureData.maxLeverage === option.value ? "opacity-100" : "opacity-0"
+                            }`}></div>
                           </div>
                         </div>
                       </CardHeader>
