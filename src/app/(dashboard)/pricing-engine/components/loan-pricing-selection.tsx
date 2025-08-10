@@ -69,7 +69,7 @@ export default function LoanPricingSelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!selectedType}
             onClick={handleCalculate}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Calculate
           </Button>
@@ -125,7 +125,7 @@ export default function LoanPricingSelection({ onBack, onNext }: Props) {
             size="lg" 
             disabled={!selectedType}
             onClick={handleCalculate}
-            className="px-12 bg-blue-600 hover:bg-blue-700"
+            className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
             Calculate
           </Button>

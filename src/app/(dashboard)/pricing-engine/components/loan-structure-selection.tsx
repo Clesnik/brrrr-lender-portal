@@ -96,9 +96,9 @@ export default function LoanStructureSelection({ onBack, onNext }: Props) {
           </Button>
           <Button 
             onClick={handleContinue}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
           >
-            Calculate
+            className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
           </Button>
         </div>
 
