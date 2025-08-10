@@ -273,5 +273,3 @@ export default function RehabDetailsSelection({ onBack, onNext }: Props) {
       </div>
     </div>
   )
-}
-}
