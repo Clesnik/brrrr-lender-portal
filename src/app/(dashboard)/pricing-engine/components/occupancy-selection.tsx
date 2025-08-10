@@ -99,8 +99,8 @@ export default function OccupancySelection({ onBack, onNext }: Props) {
           <Button 
             disabled={!isFormValid}
             onClick={handleContinue}
-            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a]"
-            className="px-12 bg-[#24356C] hover:bg-[#1e2d5a]"
+            className="flex items-center gap-2 bg-[#24356C] hover:bg-[#1e2d5a] px-12"
+          >
             Next
             <ArrowRight className="w-4 h-4" />
           </Button>
