@@ -46,7 +46,12 @@ export default function LoanTypeSelection({ onNext }: Props) {
             >
               <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-[#24356C]">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl">DSCR</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-2xl">DSCR</CardTitle>
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-[#24356C] peer-data-[state=checked]:bg-[#24356C] flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                    </div>
+                  </div>
                   <CardDescription className="text-base">
                     Long-term rental property financing based on cash flow
                   </CardDescription>
@@ -83,7 +88,12 @@ export default function LoanTypeSelection({ onNext }: Props) {
             >
               <Card className="h-full transition-all hover:shadow-md peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-[#24356C]">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl">Bridge</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-2xl">Bridge</CardTitle>
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 peer-data-[state=checked]:border-[#24356C] peer-data-[state=checked]:bg-[#24356C] flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-data-[state=checked]:opacity-100"></div>
+                    </div>
+                  </div>
                   <CardDescription className="text-base">
                     Short-term financing for fix-and-flip projects
                   </CardDescription>
